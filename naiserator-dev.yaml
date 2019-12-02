@@ -2,7 +2,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: syfosmjob
-  namespace: syfocron
+  namespace: syfosm
 spec:
   schedule: "0-59/2 * * * *"
   jobTemplate:
@@ -54,10 +54,6 @@ spec:
                   value: https://vault.adeo.no
                 - name: VKS_AUTH_PATH
                   value: /kubernetes/prod/fss
-                - name: VKS_KV_PATH
-                  value: /kv/prod/fss/syfosoknadjob/syfocron
-                - name: VKS_VAULT_ROLE
-                  value: syfosoknadjob
                 - name: VKS_SECRET_DEST_PATH
                   value: /var/run/secrets/nais.io/vault
               image: navikt/vks:29

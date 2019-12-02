@@ -23,8 +23,18 @@ val h2Version = "1.4.197"
 val ktorVersion = "1.2.5"
 val prometheusVersion = "0.5.0"
 
+val githubUser: String by project
+val githubPassword: String by project
+
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://maven.pkg.github.com/navikt/syfosm-common")
+        credentials {
+            username = githubUser
+            password = githubPassword
+        }
+    }
 }
 
 dependencies {

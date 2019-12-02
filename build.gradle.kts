@@ -22,6 +22,8 @@ val postgresVersion = "42.2.5"
 val h2Version = "1.4.197"
 val ktorVersion = "1.2.5"
 val prometheusVersion = "0.5.0"
+val logbackVersion = "1.2.3"
+val logstashEncoderVersion = "5.1"
 
 val githubUser: String by project
 val githubPassword: String by project
@@ -44,6 +46,9 @@ dependencies {
 
     implementation ("io.prometheus:simpleclient_hotspot:$prometheusVersion")
     implementation ("io.prometheus:simpleclient_common:$prometheusVersion")
+
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
     implementation ("io.ktor:ktor-server-netty:$ktorVersion")
     implementation ("io.ktor:ktor-client-apache:$ktorVersion")

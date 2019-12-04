@@ -2,7 +2,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: syfosmjob
-  namespace: syfocron
+  namespace: syfosm
 spec:
   schedule: "0 0 * * *"
   jobTemplate:

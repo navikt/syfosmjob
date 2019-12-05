@@ -102,6 +102,10 @@ tasks {
         }
     }
 
+    withType<Wrapper> {
+        gradleVersion = "6.0.1"
+    }
+
     "check" {
         dependsOn("formatKotlin")
     }

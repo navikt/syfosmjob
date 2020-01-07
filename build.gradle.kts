@@ -6,10 +6,9 @@ group = "no.nav.helse"
 version = "1.0.0"
 
 plugins {
-    kotlin("jvm") version "1.3.60"
-    id("com.diffplug.gradle.spotless") version "3.23.1"
-    id("com.github.johnrengelman.shadow") version "4.0.4"
-    id("org.jmailen.kotlinter") version "2.1.1"
+    kotlin("jvm") version "1.3.61"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("org.jmailen.kotlinter") version "2.2.0"
 }
 
 val junitJupiterVersion = "5.4.0"
@@ -104,10 +103,6 @@ tasks {
 
     withType<Wrapper> {
         gradleVersion = "6.0.1"
-    }
-
-    "check" {
-        dependsOn("formatKotlin")
     }
 
 }

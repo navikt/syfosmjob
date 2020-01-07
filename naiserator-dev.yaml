@@ -3,6 +3,8 @@ kind: CronJob
 metadata:
   name: syfosmjob
   namespace: syfosm
+  labels:
+    team: teamsykefravr
 spec:
   schedule: "0-59/2 * * * *"
   jobTemplate:
@@ -12,7 +14,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: syfosmjob
-              image: "docker.pkg.github.com/navikt/syfosmjob:{{tag}}"
+              image: {{ image }}
               resources:
                 requests:
                   memory: "128Mi"

@@ -58,7 +58,7 @@ spec:
                   value: /kubernetes/prod/fss
                 - name: VKS_SECRET_DEST_PATH
                   value: /var/run/secrets/nais.io/vault
-              image: navikt/vks:29
+              image: navikt/vks:44
               resources:
                 requests:
                   memory: "64Mi"

@@ -50,26 +50,6 @@ spec:
                   value: /postgresql/preprod-fss
                 - name: PROMETHEUS_PUSH_GATEWAY_URL
                   value: "http://nais-prometheus-prometheus-pushgateway.nais:9091"
-          initContainers:
-            - env:
-                - name: VKS_VAULT_ADDR
-                  value: https://vault.adeo.no
-                - name: VKS_AUTH_PATH
-                  value: /kubernetes/prod/fss
-                - name: VKS_SECRET_DEST_PATH
-                  value: /var/run/secrets/nais.io/vault
-              image: navikt/vks:29
-              resources:
-                requests:
-                  memory: "64Mi"
-                  cpu: "100m"
-                limits:
-                  memory: "128Mi"
-                  cpu: "100m"
-              name: vks
-              volumeMounts:
-                - mountPath: /var/run/secrets/nais.io/vault
-                  name: vault-secrets
           serviceAccount: podcreator
           serviceAccountName: podcreator
           volumes:

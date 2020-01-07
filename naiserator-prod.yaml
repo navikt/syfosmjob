@@ -60,3 +60,4 @@ spec:
             - emptyDir:
                 medium: Memory
               name: vault-secrets
+      backoffLimit: 4

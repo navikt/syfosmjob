@@ -9,6 +9,7 @@ spec:
   schedule: "0-59/2 * * * *"
   jobTemplate:
     spec:
+      ttlSecondsAfterFinished: 100
       template:
         spec:
           restartPolicy: Never

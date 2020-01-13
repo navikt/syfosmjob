@@ -10,6 +10,7 @@ spec:
   backoffLimit: 2
   template:
     spec:
+      backoffLimit: 4
       ttlSecondsAfterFinished: 100
       restartPolicy: Never
       imagePullSecrets:
@@ -73,14 +74,13 @@ spec:
                 subPath: ca-bundle.jks
               - mountPath: /var/run/secrets/nais.io/vault
                 name: vault-volume
-        serviceAccount: podcreator
-        serviceAccountName: podcreator
-        volumes:
-          - configMap:
-              defaultMode: 420
-              name: ca-bundle
+      serviceAccount: podcreator
+      serviceAccountName: podcreator
+      volumes:
+        - name: vault-volume
+          emptyDir:
+            medium: Memory
+        - name: ca-bundle
+          configMap:
+            defaultMode: 420
             name: ca-bundle
-          - emptyDir:
-              medium: Memory
-            name: vault-volume
-      backoffLimit: 4

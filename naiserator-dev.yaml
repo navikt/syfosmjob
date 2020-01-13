@@ -54,51 +54,51 @@ spec:
                 - mountPath: /var/run/secrets/nais.io/vault
                   name: vault-secrets
           initContainers:
-              args:
-              - -v=10
-              - -logtostderr
-              - -vault=https://vault.adeo.no
-              - -one-shot
-              - -cn=secret:kv/preprod/fss/syfosmjob/default:dir=/var/run/secrets/nais.io/vault,fmt=flatten
-              - -save-token=/var/run/secrets/nais.io/vault/vault_token
-              env:
-                - name: VKS_VAULT_ADDR
-                  value: https://vault.adeo.no
-                - name: VKS_AUTH_PATH
-                  value: /kubernetes/preprod/fss
-                - name: VKS_KV_PATH
-                  value: /kv/preprod/fss/syfosmjob/syfosmjob
-                - name: VKS_VAULT_ROLE
-                  value: syfosmjob
-                - name: VKS_SECRET_DEST_PATH
-                  value: /var/run/secrets/nais.io/vault
-                - name: VAULT_AUTH_METHOD
-                  value: kubernetes
-                - name: VAULT_SIDEKICK_ROLE
-                  value: syfosmjob
-                - name: VAULT_K8S_LOGIN_PATH
-                  value: auth/kubernetes/preprod/fss/login
-              image: navikt/vks:29
-              resources:
-                requests:
-                  memory: "64Mi"
-                  cpu: "100m"
-                limits:
-                  memory: "128Mi"
-                  cpu: "100m"
-              name: vks
-              volumeMounts:
-              - mountPath: /var/run/secrets/nais.io/vault
-                name: vault-volume
-                subPath: subpath/var/run/secrets/nais.io/vault
-          serviceAccount: podcreator
-          serviceAccountName: podcreator
-          volumes:
-            - configMap:
-                defaultMode: 420
-                name: ca-bundle
+          - args:
+            - -v=10
+            - -logtostderr
+            - -vault=https://vault.adeo.no
+            - -one-shot
+            - -cn=secret:kv/preprod/fss/syfosmjob/default:dir=/var/run/secrets/nais.io/vault,fmt=flatten
+            - -save-token=/var/run/secrets/nais.io/vault/vault_token
+            env:
+              - name: VKS_VAULT_ADDR
+                value: https://vault.adeo.no
+              - name: VKS_AUTH_PATH
+                value: /kubernetes/preprod/fss
+              - name: VKS_KV_PATH
+                value: /kv/preprod/fss/syfosmjob/syfosmjob
+              - name: VKS_VAULT_ROLE
+                value: syfosmjob
+              - name: VKS_SECRET_DEST_PATH
+                value: /var/run/secrets/nais.io/vault
+              - name: VAULT_AUTH_METHOD
+                value: kubernetes
+              - name: VAULT_SIDEKICK_ROLE
+                value: syfosmjob
+              - name: VAULT_K8S_LOGIN_PATH
+                value: auth/kubernetes/preprod/fss/login
+            image: navikt/vks:29
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "100m"
+              limits:
+                memory: "128Mi"
+                cpu: "100m"
+            name: vks
+            volumeMounts:
+            - mountPath: /var/run/secrets/nais.io/vault
+              name: vault-volume
+              subPath: subpath/var/run/secrets/nais.io/vault
+        serviceAccount: podcreator
+        serviceAccountName: podcreator
+        volumes:
+          - configMap:
+              defaultMode: 420
               name: ca-bundle
-            - emptyDir:
-                medium: Memory
-              name: vault-secrets
+            name: ca-bundle
+          - emptyDir:
+              medium: Memory
+            name: vault-secrets
       backoffLimit: 4

@@ -23,6 +23,8 @@ spec:
                 limits:
                   memory: "256Mi"
                   cpu: "1000m"
+          imagePullSecrets:
+            - name: gpr-credentials
               volumeMounts:
                 - mountPath: /etc/ssl/certs/ca-certificates.crt
                   name: ca-bundle

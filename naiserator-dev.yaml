@@ -13,6 +13,8 @@ spec:
       template:
         spec:
           restartPolicy: Never
+          imagePullSecrets:
+            - name: gpr-credentials
           containers:
             - name: syfosmjob
               image: {{ image }}
@@ -30,8 +32,6 @@ spec:
                   value: "/postgresql/preprod-fss"
                 - name: PROMETHEUS_PUSH_GATEWAY_URL
                   value: "http://nais-prometheus-prometheus-pushgateway.nais:9091"
-          imagePullSecrets:
-            - name: gpr-credentials
               volumeMounts:
                 - mountPath: /etc/ssl/certs/ca-certificates.crt
                   name: ca-bundle
@@ -51,7 +51,7 @@ spec:
                 - mountPath: /etc/ssl/certs/java/cacerts
                   name: ca-bundle
                   subPath: ca-bundle.jks
-                - mountPath: /var/run/secrets/nais.io/vault/
+                - mountPath: /var/run/secrets/nais.io/vault
                   name: vault-secrets
           initContainers:
           - args:
@@ -69,7 +69,7 @@ spec:
               - name: VKS_KV_PATH
                 value: /kv/preprod/fss/syfosmjob/syfosmjob
               - name: VKS_VAULT_ROLE
-                value: syfosmjob
+                value: teamsykefravr
               - name: VKS_SECRET_DEST_PATH
                 value: /var/run/secrets/nais.io/vault
               - name: VAULT_AUTH_METHOD
@@ -78,7 +78,7 @@ spec:
                 value: syfosmjob
               - name: VAULT_K8S_LOGIN_PATH
                 value: auth/kubernetes/preprod/fss/login
-            image: navikt/vks:29
+            image: navikt/vks:44
             resources:
               requests:
                 memory: "64Mi"

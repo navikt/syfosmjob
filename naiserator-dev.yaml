@@ -19,10 +19,10 @@ spec:
               resources:
                 requests:
                   memory: "128Mi"
-                  cpu: "1000m"
+                  cpu: "5000m"
                 limits:
                   memory: "256Mi"
-                  cpu: "5000m"
+                  cpu: "6000m"
               volumeMounts:
                 - mountPath: /etc/ssl/certs/ca-certificates.crt
                   name: ca-bundle

@@ -10,7 +10,7 @@ fun DatabaseInterface.oppdaterStatusTilutgat(ugaatDato: LocalDate) {
     connection.use { connection ->
         connection.prepareStatement(
             """
-                UPDATE SYKMELDINGSATUS
+                UPDATE SYKMELDINGSTATUS
                 SET event = ?
                 WHERE sykmelding_id = ?
             """
@@ -28,7 +28,7 @@ fun DatabaseInterface.harSykmeldingssatus() =
         connection.prepareStatement(
             """
                 SELECT *
-                FROM SYKMELDINGSATUS;
+                FROM SYKMELDINGSTATUS;
                 """
         ).use {
             it.executeQuery().next()

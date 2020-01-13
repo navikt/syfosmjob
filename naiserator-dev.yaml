@@ -52,7 +52,7 @@ spec:
                   name: ca-bundle
                   subPath: ca-bundle.jks
                 - mountPath: /var/run/secrets/nais.io/vault/
-                  name: vault-volume
+                  name: vault-secrets
                   subPath: subpath/var/run/secrets/nais.io/vault
           initContainers:
           - args:
@@ -90,7 +90,7 @@ spec:
             name: vks
             volumeMounts:
             - mountPath: /var/run/secrets/nais.io/vault
-              name: vault-volume
+              name: vault-secrets
               subPath: subpath/var/run/secrets/nais.io/vault
         serviceAccount: podcreator
         serviceAccountName: podcreator
@@ -101,5 +101,5 @@ spec:
             name: ca-bundle
           - emptyDir:
               medium: Memory
-            name: vault-volume
+            name: vault-secrets
       backoffLimit: 4

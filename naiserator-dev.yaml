@@ -6,7 +6,7 @@ metadata:
   labels:
     team: teamsykefravr
 spec:
-  schedule: "0-59/2 * * * *"
+  schedule: "0-59/6 * * * *"
   jobTemplate:
     spec:
       ttlSecondsAfterFinished: 100
@@ -16,13 +16,6 @@ spec:
           containers:
             - name: syfosmjob
               image: {{ image }}
-              resources:
-                requests:
-                  memory: "128Mi"
-                  cpu: "5000m"
-                limits:
-                  memory: "256Mi"
-                  cpu: "6000m"
               volumeMounts:
                 - mountPath: /etc/ssl/certs/ca-certificates.crt
                   name: ca-bundle

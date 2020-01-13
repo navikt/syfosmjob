@@ -101,5 +101,5 @@ spec:
             name: ca-bundle
           - emptyDir:
               medium: Memory
-            name: vault-secrets
+            name: vault-volume
       backoffLimit: 4

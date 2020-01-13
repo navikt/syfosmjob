@@ -37,13 +37,6 @@ spec:
                   subPath: ca-bundle.jks
                 - mountPath: /var/run/secrets/nais.io/vault
                   name: vault-secrets
-                resources:
-                  limits:
-                    cpu: "500m"
-                    memory: "1Gi"
-                  requests:
-                    cpu: "100m"
-                    memory: "128Mi"
               env:
                 - name: SYFOSMREGISTER_DB_URL
                   value: jdbc:postgresql://fsspgdb.adeo.no:5432/syfosmregister

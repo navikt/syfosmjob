@@ -38,7 +38,7 @@ repositories {
             username = githubUser
             password = githubPassword
         }
-        setUrl("https://maven.pkg.github.com/navikt/syfosmcommon")
+        setUrl("https://maven.pkg.github.com/navikt/syfosm-common")
     }
 }
 ```

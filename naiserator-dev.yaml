@@ -46,13 +46,6 @@ spec:
                   subPath: ca-bundle.jks
                 - mountPath: /var/run/secrets/nais.io/vault
                   name: vault-secrets
-              env:
-                - name: SYFOSMREGISTER_DB_URL
-                  value: "jdbc:postgresql://B27DBVL003.preprod.local:5432/syfosmregister"
-                - name: MOUNT_PATH_VAULT
-                  value: "/postgresql/preprod-fss"
-                - name: PROMETHEUS_PUSH_GATEWAY_URL
-                  value: "http://nais-prometheus-prometheus-pushgateway.nais:9091"
           initContainers:
             - env:
                 - name: VKS_VAULT_ADDR
@@ -65,6 +58,12 @@ spec:
                   value: syfosmjob
                 - name: VKS_SECRET_DEST_PATH
                   value: /var/run/secrets/nais.io/vault
+                - name: SYFOSMREGISTER_DB_URL
+                  value: "jdbc:postgresql://B27DBVL003.preprod.local:5432/syfosmregister"
+                - name: MOUNT_PATH_VAULT
+                  value: "/postgresql/preprod-fss"
+                - name: PROMETHEUS_PUSH_GATEWAY_URL
+                  value: "http://nais-prometheus-prometheus-pushgateway.nais:9091"
               image: navikt/vks:29
               resources:
                 requests:

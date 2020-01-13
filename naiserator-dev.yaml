@@ -18,13 +18,6 @@ spec:
           containers:
           - name: syfosmjob
             image: {{ image }}
-            resources:
-              requests:
-                memory: "128Mi"
-                cpu: "1000m"
-              limits:
-                memory: "256Mi"
-                cpu: "1000m"
             env:
               - name: SYFOSMREGISTER_DB_URL
                 value: "jdbc:postgresql://B27DBVL003.preprod.local:5432/syfosmregister"
@@ -53,6 +46,13 @@ spec:
                 subPath: ca-bundle.jks
               - mountPath: /var/run/secrets/nais.io/vault
                 name: vault-secrets
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "1000m"
+            limits:
+              memory: "256Mi"
+              cpu: "1000m"
           initContainers:
           - args:
             - -v=10

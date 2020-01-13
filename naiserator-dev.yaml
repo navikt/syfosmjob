@@ -16,13 +16,13 @@ spec:
           containers:
             - name: syfosmjob
               image: {{ image }}
-            resources:
-              requests:
-                memory: "128Mi"
-                cpu: "250m"
+              resources:
               limits:
-                memory: "256Mi"
-                cpu: "500m"
+                cpu: 500m
+                memory: 1Gi
+              requests:
+                cpu: 100m
+                memory: 128Mi
               volumeMounts:
                 - mountPath: /etc/ssl/certs/ca-certificates.crt
                   name: ca-bundle

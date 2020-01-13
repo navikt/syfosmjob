@@ -6,7 +6,7 @@ metadata:
   labels:
     team: teamsykefravr
 spec:
-  schedule: "0-59/5 * * * *"
+  schedule: "0 0 * * *"
   jobTemplate:
     spec:
       backoffLimit: 4

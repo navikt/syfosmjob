@@ -7,79 +7,81 @@ metadata:
     team: teamsykefravr
 spec:
   schedule: "0-59/5 * * * *"
-  backoffLimit: 4
-  template:
+  jobTemplate:
     spec:
-      restartPolicy: Never
-      ttlSecondsAfterFinished: 100
-      imagePullSecrets:
-        - name: gpr-credentials
-      initContainers:
-        - name: vault-init
-          image: navikt/vault-sidekick:v0.3.10-d122b16
-          resources:
-            limits:
-              cpu: "1"
-              memory: "1024Mi"
-            requests:
-              cpu: "0.5"
-              memory: "512Mi"
-          args:
-            - -v=10
-            - -logtostderr
-            - -vault=https://vault.adeo.no
-            - -one-shot
-            - -cn=secret:kv/preprod/fss/syfosmjob/default:dir=/var/run/secrets/nais.io/vault,fmt=flatten
-            - -save-token=/var/run/secrets/nais.io/vault/vault_token
-          env:
-            - name: VAULT_AUTH_METHOD
-              value: kubernetes
-            - name: VAULT_SIDEKICK_ROLE
-              value: syfosmjob
-            - name: VAULT_K8S_LOGIN_PATH
-              value: auth/kubernetes/preprod/fss/login
-          volumeMounts:
-            - mountPath: /var/run/secrets/nais.io/vault
-              name: vault-volume
-              subPath: subpath/var/run/secrets/nais.io/vault
-          containers:
-          - name: syfosmjob
-            image: {{ image }}
-            env:
-              - name: SYFOSMREGISTER_DB_URL
-                value: "jdbc:postgresql://B27DBVL003.preprod.local:5432/syfosmregister"
-              - name: MOUNT_PATH_VAULT
-                value: "/postgresql/preprod-fss"
-              - name: PROMETHEUS_PUSH_GATEWAY_URL
-                value: "http://nais-prometheus-prometheus-pushgateway.nais:9091"
-            volumeMounts:
-              - mountPath: /etc/ssl/certs/ca-certificates.crt
+      template:
+        spec:
+          restartPolicy: Never
+          backoffLimit: 4
+          ttlSecondsAfterFinished: 100
+          imagePullSecrets:
+            - name: gpr-credentials
+          initContainers:
+            - name: vault-init
+              image: navikt/vault-sidekick:v0.3.10-d122b16
+              resources:
+                limits:
+                  cpu: "1"
+                  memory: "1024Mi"
+                requests:
+                  cpu: "0.5"
+                  memory: "512Mi"
+              args:
+                - -v=10
+                - -logtostderr
+                - -vault=https://vault.adeo.no
+                - -one-shot
+                - -cn=secret:kv/preprod/fss/syfosmjob/default:dir=/var/run/secrets/nais.io/vault,fmt=flatten
+                - -save-token=/var/run/secrets/nais.io/vault/vault_token
+              env:
+                - name: VAULT_AUTH_METHOD
+                  value: kubernetes
+                - name: VAULT_SIDEKICK_ROLE
+                  value: syfosmjob
+                - name: VAULT_K8S_LOGIN_PATH
+                  value: auth/kubernetes/preprod/fss/login
+              volumeMounts:
+                - mountPath: /var/run/secrets/nais.io/vault
+                  name: vault-volume
+                  subPath: subpath/var/run/secrets/nais.io/vault
+              containers:
+              - name: syfosmjob
+                image: {{ image }}
+                env:
+                  - name: SYFOSMREGISTER_DB_URL
+                    value: "jdbc:postgresql://B27DBVL003.preprod.local:5432/syfosmregister"
+                  - name: MOUNT_PATH_VAULT
+                    value: "/postgresql/preprod-fss"
+                  - name: PROMETHEUS_PUSH_GATEWAY_URL
+                    value: "http://nais-prometheus-prometheus-pushgateway.nais:9091"
+                volumeMounts:
+                  - mountPath: /etc/ssl/certs/ca-certificates.crt
+                    name: ca-bundle
+                    subPath: ca-bundle.pem
+                  - mountPath: /etc/pki/tls/certs/ca-bundle.crt
+                    name: ca-bundle
+                    subPath: ca-bundle.pem
+                  - mountPath: /etc/ssl/ca-bundle.pem
+                    name: ca-bundle
+                    subPath: ca-bundle.pem
+                  - mountPath: /etc/pki/tls/cacert.pem
+                    name: ca-bundle
+                    subPath: ca-bundle.pem
+                  - mountPath: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+                    name: ca-bundle
+                    subPath: ca-bundle.pem
+                  - mountPath: /etc/ssl/certs/java/cacerts
+                    name: ca-bundle
+                    subPath: ca-bundle.jks
+                  - mountPath: /var/run/secrets/nais.io/vault
+                    name: vault-volume
+          serviceAccount: podcreator
+          serviceAccountName: podcreator
+          volumes:
+            - name: vault-volume
+              emptyDir:
+                medium: Memory
+            - name: ca-bundle
+              configMap:
+                defaultMode: 420
                 name: ca-bundle
-                subPath: ca-bundle.pem
-              - mountPath: /etc/pki/tls/certs/ca-bundle.crt
-                name: ca-bundle
-                subPath: ca-bundle.pem
-              - mountPath: /etc/ssl/ca-bundle.pem
-                name: ca-bundle
-                subPath: ca-bundle.pem
-              - mountPath: /etc/pki/tls/cacert.pem
-                name: ca-bundle
-                subPath: ca-bundle.pem
-              - mountPath: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
-                name: ca-bundle
-                subPath: ca-bundle.pem
-              - mountPath: /etc/ssl/certs/java/cacerts
-                name: ca-bundle
-                subPath: ca-bundle.jks
-              - mountPath: /var/run/secrets/nais.io/vault
-                name: vault-volume
-      serviceAccount: podcreator
-      serviceAccountName: podcreator
-      volumes:
-        - name: vault-volume
-          emptyDir:
-            medium: Memory
-        - name: ca-bundle
-          configMap:
-            defaultMode: 420
-            name: ca-bundle

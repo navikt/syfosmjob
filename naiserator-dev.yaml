@@ -6,7 +6,7 @@ metadata:
   labels:
     team: teamsykefravr
 spec:
-  schedule: "0-59/6 * * * *"
+  schedule: "0-59/10 * * * *"
   jobTemplate:
     spec:
       ttlSecondsAfterFinished: 100

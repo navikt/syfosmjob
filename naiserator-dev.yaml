@@ -54,15 +54,6 @@ spec:
                 - mountPath: /var/run/secrets/nais.io/vault
                   name: vault-secrets
           initContainers:
-            - name: vault-init
-              image: navikt/vault-sidekick:v0.3.10-d122b16
-              resources:
-                limits:
-                  cpu: "1"
-                  memory: "1024Mi"
-                requests:
-                  cpu: "0.5"
-                  memory: "512Mi"
               args:
               - -v=10
               - -logtostderr
@@ -70,7 +61,7 @@ spec:
               - -one-shot
               - -cn=secret:kv/preprod/fss/syfosmjob/default:dir=/var/run/secrets/nais.io/vault,fmt=flatten
               - -save-token=/var/run/secrets/nais.io/vault/vault_token
-            - env:
+              env:
                 - name: VKS_VAULT_ADDR
                   value: https://vault.adeo.no
                 - name: VKS_AUTH_PATH

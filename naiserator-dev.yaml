@@ -51,8 +51,9 @@ spec:
                 - mountPath: /etc/ssl/certs/java/cacerts
                   name: ca-bundle
                   subPath: ca-bundle.jks
-                - mountPath: /var/run/secrets/nais.io/vault
-                  name: vault-secrets
+                - mountPath: /var/run/secrets/nais.io/vault/
+                  name: vault-volume
+                  subPath: subpath/var/run/secrets/nais.io/vault
           initContainers:
           - args:
             - -v=10

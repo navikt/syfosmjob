@@ -44,44 +44,44 @@ spec:
                 - mountPath: /var/run/secrets/nais.io/vault
                   name: vault-volume
                   subPath: subpath/var/run/secrets/nais.io/vault
-              containers:
-              - name: syfosmjob
-                image: {{ image }}
-                env:
-                  - name: SYFOSMREGISTER_DB_URL
-                    value: "jdbc:postgresql://B27DBVL003.preprod.local:5432/syfosmregister"
-                  - name: MOUNT_PATH_VAULT
-                    value: "/postgresql/preprod-fss"
-                  - name: PROMETHEUS_PUSH_GATEWAY_URL
-                    value: "http://nais-prometheus-prometheus-pushgateway.nais:9091"
-                volumeMounts:
-                  - mountPath: /etc/ssl/certs/ca-certificates.crt
-                    name: ca-bundle
-                    subPath: ca-bundle.pem
-                  - mountPath: /etc/pki/tls/certs/ca-bundle.crt
-                    name: ca-bundle
-                    subPath: ca-bundle.pem
-                  - mountPath: /etc/ssl/ca-bundle.pem
-                    name: ca-bundle
-                    subPath: ca-bundle.pem
-                  - mountPath: /etc/pki/tls/cacert.pem
-                    name: ca-bundle
-                    subPath: ca-bundle.pem
-                  - mountPath: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
-                    name: ca-bundle
-                    subPath: ca-bundle.pem
-                  - mountPath: /etc/ssl/certs/java/cacerts
-                    name: ca-bundle
-                    subPath: ca-bundle.jks
-                  - mountPath: /var/run/secrets/nais.io/vault
-                    name: vault-volume
+          containers:
+          - name: syfosmjob
+            image: {{ image }}
+            env:
+              - name: SYFOSMREGISTER_DB_URL
+                value: "jdbc:postgresql://B27DBVL003.preprod.local:5432/syfosmregister"
+              - name: MOUNT_PATH_VAULT
+                value: "/postgresql/preprod-fss"
+              - name: PROMETHEUS_PUSH_GATEWAY_URL
+                value: "http://nais-prometheus-prometheus-pushgateway.nais:9091"
+            volumeMounts:
+              - mountPath: /etc/ssl/certs/ca-certificates.crt
+                name: ca-bundle
+                subPath: ca-bundle.pem
+              - mountPath: /etc/pki/tls/certs/ca-bundle.crt
+                name: ca-bundle
+                subPath: ca-bundle.pem
+              - mountPath: /etc/ssl/ca-bundle.pem
+                name: ca-bundle
+                subPath: ca-bundle.pem
+              - mountPath: /etc/pki/tls/cacert.pem
+                name: ca-bundle
+                subPath: ca-bundle.pem
+              - mountPath: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+                name: ca-bundle
+                subPath: ca-bundle.pem
+              - mountPath: /etc/ssl/certs/java/cacerts
+                name: ca-bundle
+                subPath: ca-bundle.jks
+              - mountPath: /var/run/secrets/nais.io/vault
+                name: vault-volume
           serviceAccount: podcreator
           serviceAccountName: podcreator
           volumes:
-            - name: vault-volume
-              emptyDir:
-                medium: Memory
-            - name: ca-bundle
-              configMap:
+            - configMap:
                 defaultMode: 420
                 name: ca-bundle
+              name: ca-bundle
+            - emptyDir:
+                medium: Memory
+              name: vault-volume

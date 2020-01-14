@@ -19,10 +19,12 @@ val hikariVersion = "3.3.0"
 val vaultJavaDriveVersion = "3.1.0"
 val postgresVersion = "42.2.5"
 val h2Version = "1.4.197"
-val ktorVersion = "1.2.5"
+val ktorVersion = "1.2.6"
 val prometheusVersion = "0.5.0"
 val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
+val postgresEmbeddedVersion = "0.13.1"
+val smCommonVersion = "1.7bf5e6f"
 
 val githubUser: String by project
 val githubPassword: String by project
@@ -64,6 +66,10 @@ dependencies {
     implementation("com.zaxxer:HikariCP:$hikariVersion")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("com.bettercloud:vault-java-driver:$vaultJavaDriveVersion")
+
+    implementation("no.nav.helse:syfosm-common-models:$smCommonVersion")
+
+    testImplementation("com.opentable.components:otj-pg-embedded:$postgresEmbeddedVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")

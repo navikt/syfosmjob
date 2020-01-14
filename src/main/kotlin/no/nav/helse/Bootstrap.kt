@@ -1,8 +1,9 @@
 package no.nav.helse
 
+import java.time.LocalDateTime
 import no.nav.helse.db.Database
 import no.nav.helse.db.VaultCredentialService
-import no.nav.helse.utgatsykmelding.harSykmeldingssatus
+import no.nav.helse.utgatsykmelding.oppdaterSykmeldingStatusTilUtgatt
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -12,7 +13,10 @@ fun main() {
     val environment = Environment()
     val vaultCredentialService = VaultCredentialService()
     val database = Database(environment, vaultCredentialService)
-    val databasekobling = database.harSykmeldingssatus()
-
-    //database.oppdaterStatusTilutgat(LocalDate.now())
+    log.info("Kjører database spørring, og setter status til UTGATT på sykmeldinger som er utgått")
+    database.oppdaterSykmeldingStatusTilUtgatt(finnUtgaatDato())
+    log.info("Database spørring er ferdig")
 }
+
+fun finnUtgaatDato(): LocalDateTime =
+    LocalDateTime.now().minusMonths(3)

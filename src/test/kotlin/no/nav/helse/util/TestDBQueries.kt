@@ -2,6 +2,8 @@ package no.nav.helse.util
 
 import java.sql.Timestamp
 import no.nav.helse.db.DatabaseInterface
+import no.nav.helse.db.toList
+import java.sql.ResultSet
 
 fun DatabaseInterface.registerStatus(sykmeldingStatusEvent: SykmeldingStatusEvent) {
     connection.use { connection ->
@@ -15,6 +17,7 @@ fun DatabaseInterface.registerStatus(sykmeldingStatusEvent: SykmeldingStatusEven
             it.setString(3, sykmeldingStatusEvent.event.name)
             it.execute()
         }
+        connection.commit()
     }
 }
 
@@ -54,5 +57,37 @@ fun DatabaseInterface.opprettSykmeldingsopplysninger(sykmeldingsopplysninger: Sy
             it.setString(13, sykmeldingsopplysninger.tssid)
             it.executeUpdate()
         }
+        connection.commit()
     }
 }
+
+fun DatabaseInterface.hentSykmeldingsopplysninger(): List<Sykmeldingsopplysninger> {
+    connection.use { connection ->
+        connection.prepareStatement(
+            """
+                SELECT *
+                FROM SYKMELDINGSOPPLYSNINGER;
+                """
+        ).use {
+            return it.executeQuery().toList { toSykmeldingsopplysninger() }
+        }
+    }
+}
+
+
+fun ResultSet.toSykmeldingsopplysninger(): Sykmeldingsopplysninger =
+    Sykmeldingsopplysninger(
+        id = getString("id"),
+        pasientFnr = getString("pasient_fnr"),
+        pasientAktoerId = getString("pasient_aktoer_id"),
+        legeFnr = getString("lege_fnr"),
+        legeAktoerId = getString("lege_aktoer_id"),
+        mottakId = getString("mottak_id"),
+        legekontorOrgNr = getString("legekontor_org_nr"),
+        legekontorHerId = getString("legekontor_her_id"),
+        legekontorReshId = getString("legekontor_resh_id"),
+        epjSystemNavn = getString("epj_system_navn"),
+        epjSystemVersjon = getString("epj_system_versjon"),
+        mottattTidspunkt = getTimestamp("mottatt_tidspunkt").toLocalDateTime(),
+        tssid = getString("tss_id")
+    )

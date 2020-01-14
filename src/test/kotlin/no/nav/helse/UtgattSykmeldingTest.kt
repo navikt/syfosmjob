@@ -6,6 +6,7 @@ import no.nav.helse.util.StatusEvent
 import no.nav.helse.util.SykmeldingStatusEvent
 import no.nav.helse.util.Sykmeldingsopplysninger
 import no.nav.helse.util.TestDB
+import no.nav.helse.util.dropData
 import no.nav.helse.util.opprettSykmeldingsopplysninger
 import no.nav.helse.util.registerStatus
 import org.amshove.kluent.shouldEqual
@@ -44,5 +45,146 @@ internal class UtgattSykmeldingTest {
         val utgattDato = finnUtgaatDato()
 
         database.oppdaterSykmeldingStatusTilUtgatt(utgattDato) shouldEqual 0
+        database.connection.dropData()
+    }
+
+    @Test
+    internal fun `Skal oppdatere 1 sykmelding med status utgatt`() {
+        val sykmeldingsopplysningerNy = Sykmeldingsopplysninger(
+            id = "uuid",
+            pasientFnr = "pasientFnr",
+            pasientAktoerId = "pasientAktorId",
+            legeFnr = "legeFnr",
+            legeAktoerId = "legeAktorId",
+            mottakId = "eid-1",
+            legekontorOrgNr = "lege-orgnummer",
+            legekontorHerId = "legekontorHerId",
+            legekontorReshId = "legekontorReshId",
+            epjSystemNavn = "epjSystemNavn",
+            epjSystemVersjon = "epjSystemVersjon",
+            mottattTidspunkt = LocalDateTime.now(),
+            tssid = "13455"
+        )
+
+        val sykmeldingStatusEventNy = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysningerNy.id,
+            timestamp = sykmeldingsopplysningerNy.mottattTidspunkt,
+            event = StatusEvent.APEN
+        )
+
+        database.opprettSykmeldingsopplysninger(sykmeldingsopplysningerNy)
+        database.registerStatus(sykmeldingStatusEventNy)
+
+        val sykmeldingsopplysningerGammel = Sykmeldingsopplysninger(
+            id = "uuid1",
+            pasientFnr = "pasientFnr",
+            pasientAktoerId = "pasientAktorId",
+            legeFnr = "legeFnr",
+            legeAktoerId = "legeAktorId",
+            mottakId = "eid-1",
+            legekontorOrgNr = "lege-orgnummer",
+            legekontorHerId = "legekontorHerId",
+            legekontorReshId = "legekontorReshId",
+            epjSystemNavn = "epjSystemNavn",
+            epjSystemVersjon = "epjSystemVersjon",
+            mottattTidspunkt = LocalDateTime.now().minusMonths(4),
+            tssid = "13455"
+        )
+
+        val sykmeldingStatusEventGammel = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysningerGammel.id,
+            timestamp = sykmeldingsopplysningerGammel.mottattTidspunkt,
+            event = StatusEvent.APEN
+        )
+        database.opprettSykmeldingsopplysninger(sykmeldingsopplysningerGammel)
+        database.registerStatus(sykmeldingStatusEventGammel)
+
+
+        val utgattDato = finnUtgaatDato()
+
+        database.oppdaterSykmeldingStatusTilUtgatt(utgattDato) shouldEqual 1
+        database.connection.dropData()
+    }
+
+    @Test
+    internal fun `Skal oppdatere 2 sykmelding med status utgatt`() {
+        val sykmeldingsopplysningerNy = Sykmeldingsopplysninger(
+            id = "uuid",
+            pasientFnr = "pasientFnr",
+            pasientAktoerId = "pasientAktorId",
+            legeFnr = "legeFnr",
+            legeAktoerId = "legeAktorId",
+            mottakId = "eid-1",
+            legekontorOrgNr = "lege-orgnummer",
+            legekontorHerId = "legekontorHerId",
+            legekontorReshId = "legekontorReshId",
+            epjSystemNavn = "epjSystemNavn",
+            epjSystemVersjon = "epjSystemVersjon",
+            mottattTidspunkt = LocalDateTime.now(),
+            tssid = "13455"
+        )
+
+        val sykmeldingStatusEventNy = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysningerNy.id,
+            timestamp = sykmeldingsopplysningerNy.mottattTidspunkt,
+            event = StatusEvent.APEN
+        )
+
+        database.opprettSykmeldingsopplysninger(sykmeldingsopplysningerNy)
+        database.registerStatus(sykmeldingStatusEventNy)
+
+        val sykmeldingsopplysninger4Maander = Sykmeldingsopplysninger(
+            id = "uuid1",
+            pasientFnr = "pasientFnr",
+            pasientAktoerId = "pasientAktorId",
+            legeFnr = "legeFnr",
+            legeAktoerId = "legeAktorId",
+            mottakId = "eid-1",
+            legekontorOrgNr = "lege-orgnummer",
+            legekontorHerId = "legekontorHerId",
+            legekontorReshId = "legekontorReshId",
+            epjSystemNavn = "epjSystemNavn",
+            epjSystemVersjon = "epjSystemVersjon",
+            mottattTidspunkt = LocalDateTime.now().minusMonths(4),
+            tssid = "13455"
+        )
+
+        val sykmeldingStatusEvent4Maander = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysninger4Maander.id,
+            timestamp = sykmeldingsopplysninger4Maander.mottattTidspunkt,
+            event = StatusEvent.APEN
+        )
+        database.opprettSykmeldingsopplysninger(sykmeldingsopplysninger4Maander)
+        database.registerStatus(sykmeldingStatusEvent4Maander)
+
+        val sykmeldingsopplysninger5Maander = Sykmeldingsopplysninger(
+            id = "uuid2",
+            pasientFnr = "pasientFnr",
+            pasientAktoerId = "pasientAktorId",
+            legeFnr = "legeFnr",
+            legeAktoerId = "legeAktorId",
+            mottakId = "eid-1",
+            legekontorOrgNr = "lege-orgnummer",
+            legekontorHerId = "legekontorHerId",
+            legekontorReshId = "legekontorReshId",
+            epjSystemNavn = "epjSystemNavn",
+            epjSystemVersjon = "epjSystemVersjon",
+            mottattTidspunkt = LocalDateTime.now().minusMonths(5),
+            tssid = "13455"
+        )
+
+        val sykmeldingStatusEvent5Maander = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysninger5Maander.id,
+            timestamp = sykmeldingsopplysninger5Maander.mottattTidspunkt,
+            event = StatusEvent.APEN
+        )
+        database.opprettSykmeldingsopplysninger(sykmeldingsopplysninger5Maander)
+        database.registerStatus(sykmeldingStatusEvent5Maander)
+
+
+        val utgattDato = finnUtgaatDato()
+
+        database.oppdaterSykmeldingStatusTilUtgatt(utgattDato) shouldEqual 2
+        database.connection.dropData()
     }
 }

@@ -14,8 +14,8 @@ fun main() {
     val vaultCredentialService = VaultCredentialService()
     val database = Database(environment, vaultCredentialService)
     log.info("Kjører database spørring, og setter status til UTGATT på sykmeldinger som er utgått")
-    database.oppdaterSykmeldingStatusTilUtgatt(finnUtgaatDato())
-    log.info("Database spørring er ferdig")
+    val antallUtgatt = database.oppdaterSykmeldingStatusTilUtgatt(finnUtgaatDato())
+    log.info("Antall meldinger som ble satt til UTGATT {}", antallUtgatt)
 }
 
 fun finnUtgaatDato(): LocalDateTime =

@@ -26,6 +26,7 @@ val logstashEncoderVersion = "5.1"
 val postgresEmbeddedVersion = "0.13.3"
 val smCommonVersion = "1.7bf5e6f"
 val kluentVersion = "1.49"
+val kotlinVersion = "1.3.61"
 
 val githubUser: String by project
 val githubPassword: String by project
@@ -43,7 +44,8 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutinesVersion")
 
@@ -52,11 +54,6 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
-
-    implementation ("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation ("io.ktor:ktor-client-apache:$ktorVersion")
-    implementation ("io.ktor:ktor-client-auth-basic:$ktorVersion")
-    implementation ("io.ktor:ktor-client-jackson:$ktorVersion")
 
     implementation("com.fasterxml.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")

@@ -3,10 +3,7 @@ package no.nav.helse.vault
 import com.bettercloud.vault.SslConfig
 import com.bettercloud.vault.Vault
 import com.bettercloud.vault.VaultConfig
-import com.bettercloud.vault.VaultException
 import java.io.File
-import kotlinx.coroutines.delay
-import no.nav.syfo.application.ApplicationState
 import org.slf4j.LoggerFactory
 
 private val log = LoggerFactory.getLogger("no.nav.helse.vault")
@@ -25,27 +22,6 @@ object Vault {
                     .build()
     )
 
-    suspend fun renewVaultTokenTask(applicationState: ApplicationState) {
-        val lookupSelf = client.auth().lookupSelf()
-        if (lookupSelf.isRenewable) {
-            delay(suggestedRefreshIntervalInMillis(lookupSelf.ttl * 1000))
-            while (applicationState.ready) {
-                try {
-                    log.debug("Refreshing Vault token (old TTL: ${client.auth().lookupSelf().ttl} seconds)")
-                    val response = client.auth().renewSelf()
-                    log.debug("Successfully refreshed Vault token (new TTL: ${client.auth().lookupSelf().ttl} seconds)")
-                    delay(suggestedRefreshIntervalInMillis(response.authLeaseDuration * 1000))
-                } catch (e: VaultException) {
-                    log.error("Could not refresh the Vault token", e)
-                    log.warn("Attempting to refresh Vault token in 5 seconds")
-                    delay(5_000L)
-                }
-            }
-        } else {
-            log.warn("Vault token is not renewable")
-        }
-    }
-
     private fun getTokenFromFile(): String? =
             File(System.getenv("VAULT_TOKEN_PATH") ?: "/var/run/secrets/nais.io/vault/vault_token").let { file ->
                 when (file.exists()) {
@@ -53,11 +29,4 @@ object Vault {
                     false -> null
                 }
             }
-
-    // We should refresh tokens from Vault before they expire, so we add a MIN_REFRESH_MARGIN margin.
-    // If the token is valid for less than MIN_REFRESH_MARGIN * 2, we use duration / 2 instead.
-    fun suggestedRefreshIntervalInMillis(duration: Long): Long = when {
-        duration < MIN_REFRESH_MARGIN * 2 -> duration / 2
-        else -> duration - MIN_REFRESH_MARGIN
-    }
 }

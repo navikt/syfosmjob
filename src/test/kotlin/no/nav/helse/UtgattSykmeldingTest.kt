@@ -99,7 +99,6 @@ internal class UtgattSykmeldingTest {
         database.opprettSykmeldingsopplysninger(sykmeldingsopplysningerGammel)
         database.registerStatus(sykmeldingStatusEventGammel)
 
-
         val utgattDato = finnUtgaatDato()
 
         database.oppdaterSykmeldingStatusTilUtgatt(utgattDato) shouldEqual 1
@@ -180,7 +179,6 @@ internal class UtgattSykmeldingTest {
         )
         database.opprettSykmeldingsopplysninger(sykmeldingsopplysninger5Maander)
         database.registerStatus(sykmeldingStatusEvent5Maander)
-
 
         val utgattDato = finnUtgaatDato()
 

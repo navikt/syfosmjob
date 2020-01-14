@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource
 import java.sql.Connection
 import java.sql.ResultSet
 import no.nav.helse.Environment
-import org.flywaydb.core.Flyway
 
 enum class Role {
     ADMIN, USER, READONLY;
@@ -15,7 +14,7 @@ enum class Role {
 
 class Database(
     private val env: Environment,
-    private val vaultCredentialService: VaultCredentialService
+    vaultCredentialService: VaultCredentialService
 ) : DatabaseInterface {
     private val dataSource: HikariDataSource
 
@@ -23,8 +22,6 @@ class Database(
         get() = dataSource.connection
 
     init {
-        runFlywayMigrations()
-
         val initialCredentials = vaultCredentialService.getNewCredentials(
             mountPath = env.mountPathVault,
             databaseName = env.databaseName,
@@ -39,24 +36,6 @@ class Database(
             transactionIsolation = "TRANSACTION_REPEATABLE_READ"
             validate()
         })
-
-        vaultCredentialService.renewCredentialsTaskData = RenewCredentialsTaskData(
-            dataSource = dataSource,
-            mountPath = env.mountPathVault,
-            databaseName = env.databaseName,
-            role = Role.USER
-        )
-    }
-
-    private fun runFlywayMigrations() = Flyway.configure().run {
-        val credentials = vaultCredentialService.getNewCredentials(
-            mountPath = env.mountPathVault,
-            databaseName = env.databaseName,
-            role = Role.ADMIN
-        )
-        dataSource(env.syfosmregisterDBURL, credentials.username, credentials.password)
-        initSql("SET ROLE \"${env.databaseName}-${Role.ADMIN}\"") // required for assigning proper owners for the tables
-        load().migrate()
     }
 }
 

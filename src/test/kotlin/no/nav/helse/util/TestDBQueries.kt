@@ -1,9 +1,9 @@
 package no.nav.helse.util
 
+import java.sql.ResultSet
 import java.sql.Timestamp
 import no.nav.helse.db.DatabaseInterface
 import no.nav.helse.db.toList
-import java.sql.ResultSet
 
 fun DatabaseInterface.registerStatus(sykmeldingStatusEvent: SykmeldingStatusEvent) {
     connection.use { connection ->
@@ -73,7 +73,6 @@ fun DatabaseInterface.hentSykmeldingsopplysninger(): List<Sykmeldingsopplysninge
         }
     }
 }
-
 
 fun ResultSet.toSykmeldingsopplysninger(): Sykmeldingsopplysninger =
     Sykmeldingsopplysninger(

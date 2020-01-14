@@ -1,36 +1,13 @@
 package no.nav.helse.db
 
 import com.bettercloud.vault.VaultException
-import com.zaxxer.hikari.HikariDataSource
-import kotlinx.coroutines.delay
 import no.nav.helse.vault.Vault
-import no.nav.syfo.application.ApplicationState
 import org.slf4j.LoggerFactory
 
 private val log = LoggerFactory.getLogger("no.nav.helse.db")
 
-class VaultCredentialService() {
+class VaultCredentialService {
     var leaseDuration: Long = 0
-    var renewCredentialsTaskData: RenewCredentialsTaskData? = null
-
-    suspend fun runRenewCredentialsTask(applicationState: ApplicationState) {
-        delay(leaseDuration)
-        while (applicationState.ready) {
-            renewCredentialsTaskData?.run {
-                val credentials = getNewCredentials(
-                    mountPath,
-                    databaseName,
-                    role
-                )
-                dataSource.apply {
-                    hikariConfigMXBean.setUsername(credentials.username)
-                    hikariConfigMXBean.setPassword(credentials.password)
-                    hikariPoolMXBean.softEvictConnections()
-                }
-            }
-            delay(Vault.suggestedRefreshIntervalInMillis(leaseDuration * 1000))
-        }
-    }
 
     fun getNewCredentials(mountPath: String, databaseName: String, role: Role): VaultCredentials {
         val path = "$mountPath/creds/$databaseName-$role"
@@ -51,13 +28,6 @@ class VaultCredentialService() {
         }
     }
 }
-
-data class RenewCredentialsTaskData(
-    val dataSource: HikariDataSource,
-    val mountPath: String,
-    val databaseName: String,
-    val role: Role
-)
 
 data class VaultCredentials(
     val leaseId: String,

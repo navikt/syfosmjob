@@ -13,6 +13,7 @@ class TestDB : DatabaseInterface {
     init {
         pg = EmbeddedPostgres.start()
         Flyway.configure().run {
+            locations("migration")
             dataSource(pg?.postgresDatabase).load().migrate()
         }
     }

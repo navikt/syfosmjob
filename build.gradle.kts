@@ -23,7 +23,7 @@ val ktorVersion = "1.2.6"
 val prometheusVersion = "0.5.0"
 val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
-val postgresEmbeddedVersion = "0.13.1"
+val postgresEmbeddedVersion = "0.13.3"
 val smCommonVersion = "1.7bf5e6f"
 
 val githubUser: String by project

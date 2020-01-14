@@ -3,7 +3,7 @@ package no.nav.helse
 import java.time.LocalDateTime
 import no.nav.helse.db.Database
 import no.nav.helse.db.VaultCredentialService
-import no.nav.helse.utgatsykmelding.oppdaterSykmeldingStatusTilUtgatt
+import no.nav.helse.utgattsykmelding.oppdaterSykmeldingStatusTilUtgatt
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

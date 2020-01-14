@@ -25,6 +25,7 @@ val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
 val postgresEmbeddedVersion = "0.13.3"
 val smCommonVersion = "1.7bf5e6f"
+val kluentVersion = "1.49"
 
 val githubUser: String by project
 val githubPassword: String by project
@@ -70,6 +71,8 @@ dependencies {
     implementation("no.nav.helse:syfosm-common-models:$smCommonVersion")
 
     testImplementation("com.opentable.components:otj-pg-embedded:$postgresEmbeddedVersion")
+
+    testImplementation("org.amshove.kluent:kluent:$kluentVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")

@@ -1,12 +1,12 @@
-package no.nav.helse.utgatsykmelding
+package no.nav.helse.utgattsykmelding
 
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import no.nav.helse.db.DatabaseInterface
 
-fun DatabaseInterface.oppdaterSykmeldingStatusTilUtgatt(ugattDato: LocalDateTime) {
+fun DatabaseInterface.oppdaterSykmeldingStatusTilUtgatt(ugattDato: LocalDateTime): Int =
     connection.use { connection ->
-        connection.prepareStatement(
+    val status = connection.prepareStatement(
             """
                 UPDATE sykmeldingstatus
                 SET event = 'UTGATT'
@@ -21,5 +21,5 @@ fun DatabaseInterface.oppdaterSykmeldingStatusTilUtgatt(ugattDato: LocalDateTime
             it.executeUpdate()
         }
         connection.commit()
+    return status
     }
-}

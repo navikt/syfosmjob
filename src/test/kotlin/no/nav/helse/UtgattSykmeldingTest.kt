@@ -1,13 +1,14 @@
 package no.nav.helse
 
 import java.time.LocalDateTime
-import no.nav.helse.utgatsykmelding.oppdaterSykmeldingStatusTilUtgatt
+import no.nav.helse.utgattsykmelding.oppdaterSykmeldingStatusTilUtgatt
 import no.nav.helse.util.StatusEvent
 import no.nav.helse.util.SykmeldingStatusEvent
 import no.nav.helse.util.Sykmeldingsopplysninger
 import no.nav.helse.util.TestDB
 import no.nav.helse.util.opprettSykmeldingsopplysninger
 import no.nav.helse.util.registerStatus
+import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.Test
 
 internal class UtgattSykmeldingTest {
@@ -42,6 +43,6 @@ internal class UtgattSykmeldingTest {
 
         val utgattDato = finnUtgaatDato()
 
-        database.oppdaterSykmeldingStatusTilUtgatt(utgattDato)
+        database.oppdaterSykmeldingStatusTilUtgatt(utgattDato) shouldEqual 0
     }
 }

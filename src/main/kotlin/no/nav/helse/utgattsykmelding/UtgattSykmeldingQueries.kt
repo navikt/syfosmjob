@@ -11,11 +11,12 @@ fun DatabaseInterface.hentSykmeldingerSomSkalSettesTilStatusUtgatt(ugattDato: Lo
                 INSERT INTO sykmeldingstatus
                 SELECT ss.sykmelding_id, CURRENT_TIMESTAMP, 'UTGATT'
                 FROM sykmeldingstatus AS ss
-                where (SELECT event
+                where event_timestamp = (SELECT event_timestamp
                               FROM sykmeldingstatus
                               WHERE sykmelding_id = ss.sykmelding_id
+                              AND event = 'APEN'
                               ORDER BY event_timestamp DESC
-                              LIMIT 1) = 'APEN'
+                              LIMIT 1)
                 AND ss.event_timestamp <= ?     
             """
         ).use {

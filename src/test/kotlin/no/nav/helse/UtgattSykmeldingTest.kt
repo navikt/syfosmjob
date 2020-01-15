@@ -306,4 +306,108 @@ internal class UtgattSykmeldingTest {
 
         database.connection.dropData()
     }
+
+    @Test
+    internal fun `Skal oppdatere 1 sykmelding med status utgatt, har mange ulike statuser`() {
+        val sykmeldingsopplysningerNy = Sykmeldingsopplysninger(
+            id = "uuid",
+            pasientFnr = "pasientFnr",
+            pasientAktoerId = "pasientAktorId",
+            legeFnr = "legeFnr",
+            legeAktoerId = "legeAktorId",
+            mottakId = "eid-1",
+            legekontorOrgNr = "lege-orgnummer",
+            legekontorHerId = "legekontorHerId",
+            legekontorReshId = "legekontorReshId",
+            epjSystemNavn = "epjSystemNavn",
+            epjSystemVersjon = "epjSystemVersjon",
+            mottattTidspunkt = LocalDateTime.now(),
+            tssid = "13455"
+        )
+
+        val sykmeldingStatusEventNyApenPlus1Hours = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysningerNy.id,
+            timestamp = LocalDateTime.now().plusHours(1),
+            event = StatusEvent.APEN
+        )
+
+        database.opprettSykmeldingsopplysninger(sykmeldingsopplysningerNy)
+        database.registerStatus(sykmeldingStatusEventNyApenPlus1Hours)
+
+        val sykmeldingsopplysninger4Maander = Sykmeldingsopplysninger(
+            id = "uuid1",
+            pasientFnr = "pasientFnr",
+            pasientAktoerId = "pasientAktorId",
+            legeFnr = "legeFnr",
+            legeAktoerId = "legeAktorId",
+            mottakId = "eid-1",
+            legekontorOrgNr = "lege-orgnummer",
+            legekontorHerId = "legekontorHerId",
+            legekontorReshId = "legekontorReshId",
+            epjSystemNavn = "epjSystemNavn",
+            epjSystemVersjon = "epjSystemVersjon",
+            mottattTidspunkt = LocalDateTime.now().minusMonths(4),
+            tssid = "13455"
+        )
+
+        val sykmeldingStatusEvent4Maander = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysninger4Maander.id,
+            timestamp = sykmeldingsopplysninger4Maander.mottattTidspunkt,
+            event = StatusEvent.APEN
+        )
+        database.opprettSykmeldingsopplysninger(sykmeldingsopplysninger4Maander)
+        database.registerStatus(sykmeldingStatusEvent4Maander)
+
+        val sykmeldingsopplysninger5Maander = Sykmeldingsopplysninger(
+            id = "uuid2",
+            pasientFnr = "pasientFnr",
+            pasientAktoerId = "pasientAktorId",
+            legeFnr = "legeFnr",
+            legeAktoerId = "legeAktorId",
+            mottakId = "eid-1",
+            legekontorOrgNr = "lege-orgnummer",
+            legekontorHerId = "legekontorHerId",
+            legekontorReshId = "legekontorReshId",
+            epjSystemNavn = "epjSystemNavn",
+            epjSystemVersjon = "epjSystemVersjon",
+            mottattTidspunkt = LocalDateTime.now().minusMonths(5),
+            tssid = "13455"
+        )
+
+        val sykmeldingStatusEvent5Maander = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysninger5Maander.id,
+            timestamp = sykmeldingsopplysninger5Maander.mottattTidspunkt,
+            event = StatusEvent.APEN
+        )
+
+        val sykmeldingStatusEvent5MaanderBekreftetPlus3Hours = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysningerNy.id,
+            timestamp = LocalDateTime.now().plusHours(2),
+            event = StatusEvent.BEKREFTET
+        )
+
+        val sykmeldingStatusEvent5MaanderApenPlus3Hours = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysningerNy.id,
+            timestamp = LocalDateTime.now().plusHours(3),
+            event = StatusEvent.APEN
+        )
+
+        database.opprettSykmeldingsopplysninger(sykmeldingsopplysninger5Maander)
+        database.registerStatus(sykmeldingStatusEvent5Maander)
+        database.registerStatus(sykmeldingStatusEvent5MaanderBekreftetPlus3Hours)
+        database.registerStatus(sykmeldingStatusEvent5MaanderApenPlus3Hours)
+
+        val utgattDato = finnUtgaatDato()
+
+        val antallSykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+        antallSykmeldingerSomSkalDeaktiveres shouldEqual 2
+
+        val sykmeldingStatuser = database.hentSykmeldingStatuser()
+        sykmeldingStatuser.size shouldEqual 7
+
+        val sykmeldingStatuserUtgatt = sykmeldingStatuser.filter { it.event == StatusEvent.UTGATT }
+        sykmeldingStatuserUtgatt.size shouldEqual 2
+
+        database.connection.dropData()
+    }
 }

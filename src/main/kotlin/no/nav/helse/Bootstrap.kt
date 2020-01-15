@@ -3,7 +3,7 @@ package no.nav.helse
 import java.time.LocalDateTime
 import no.nav.helse.db.Database
 import no.nav.helse.db.VaultCredentialService
-import no.nav.helse.utgattsykmelding.hentSykmeldingerSomSkalSettesTilStatusUtgatt
+import no.nav.helse.utgattsykmelding.registerSykmeldingerSomSkalSettesTilStatusUtgatt
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -13,7 +13,7 @@ fun main() {
     val environment = Environment()
     val vaultCredentialService = VaultCredentialService()
     val database = Database(environment, vaultCredentialService)
-    val sykmeldingerSomSkalSettesTilStatusUtgatt = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(finnUtgaatDato())
+    val sykmeldingerSomSkalSettesTilStatusUtgatt = database.registerSykmeldingerSomSkalSettesTilStatusUtgatt(finnUtgaatDato())
     /*if (sykmeldingerSomSkalSettesTilStatusUtgatt.isNotEmpty()) {
         log.info("Antall av sykmeldinger som skal få oppdatert status til UTGATT: {}", sykmeldingerSomSkalSettesTilStatusUtgatt.size)
         for (status in sykmeldingerSomSkalSettesTilStatusUtgatt) {

@@ -3,7 +3,7 @@ package no.nav.helse
 import java.time.LocalDateTime
 import no.nav.helse.model.StatusEvent
 import no.nav.helse.model.SykmeldingStatusEvent
-import no.nav.helse.utgattsykmelding.hentSykmeldingerSomSkalSettesTilStatusUtgatt
+import no.nav.helse.utgattsykmelding.registerSykmeldingerSomSkalSettesTilStatusUtgatt
 import no.nav.helse.util.Sykmeldingsopplysninger
 import no.nav.helse.util.TestDB
 import no.nav.helse.util.dropData
@@ -45,7 +45,7 @@ internal class UtgattSykmeldingTest {
 
         val utgattDato = finnUtgaatDato()
 
-        val antallSykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+        val antallSykmeldingerSomSkalDeaktiveres = database.registerSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
 
         antallSykmeldingerSomSkalDeaktiveres shouldEqual 0
         database.connection.dropData()
@@ -104,7 +104,7 @@ internal class UtgattSykmeldingTest {
 
         val utgattDato = finnUtgaatDato()
 
-        val antallSykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+        val antallSykmeldingerSomSkalDeaktiveres = database.registerSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
         antallSykmeldingerSomSkalDeaktiveres shouldEqual 1
 
         val sykmeldingStatuser = database.hentSykmeldingStatuser()
@@ -193,7 +193,7 @@ internal class UtgattSykmeldingTest {
 
         val utgattDato = finnUtgaatDato()
 
-        val antallSykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+        val antallSykmeldingerSomSkalDeaktiveres = database.registerSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
         antallSykmeldingerSomSkalDeaktiveres shouldEqual 2
 
         val sykmeldingStatuser = database.hentSykmeldingStatuser()
@@ -295,7 +295,7 @@ internal class UtgattSykmeldingTest {
 
         val utgattDato = finnUtgaatDato()
 
-        val antallSykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+        val antallSykmeldingerSomSkalDeaktiveres = database.registerSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
         antallSykmeldingerSomSkalDeaktiveres shouldEqual 2
 
         val sykmeldingStatuser = database.hentSykmeldingStatuser()
@@ -327,7 +327,7 @@ internal class UtgattSykmeldingTest {
 
         val sykmeldingStatusEventNyApenPlus1Hours = SykmeldingStatusEvent(
             sykmeldingId = sykmeldingsopplysningerNy.id,
-            timestamp = LocalDateTime.now().plusHours(1),
+            timestamp = sykmeldingsopplysningerNy.mottattTidspunkt.plusHours(1),
             event = StatusEvent.APEN
         )
 
@@ -355,8 +355,16 @@ internal class UtgattSykmeldingTest {
             timestamp = sykmeldingsopplysninger4Maander.mottattTidspunkt,
             event = StatusEvent.APEN
         )
+
+        val sykmeldingStatusEvent4MaanderPlusHours2 = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysninger4Maander.id,
+            timestamp = sykmeldingsopplysninger4Maander.mottattTidspunkt.plusHours(2),
+            event = StatusEvent.APEN
+        )
+
         database.opprettSykmeldingsopplysninger(sykmeldingsopplysninger4Maander)
         database.registerStatus(sykmeldingStatusEvent4Maander)
+        database.registerStatus(sykmeldingStatusEvent4MaanderPlusHours2)
 
         val sykmeldingsopplysninger5Maander = Sykmeldingsopplysninger(
             id = "uuid2",
@@ -374,33 +382,33 @@ internal class UtgattSykmeldingTest {
             tssid = "13455"
         )
 
-        val sykmeldingStatusEvent5Maander = SykmeldingStatusEvent(
+        val sykmeldingStatusEvent5MaanderApenPlus1Hours = SykmeldingStatusEvent(
             sykmeldingId = sykmeldingsopplysninger5Maander.id,
-            timestamp = sykmeldingsopplysninger5Maander.mottattTidspunkt,
+            timestamp = sykmeldingsopplysninger5Maander.mottattTidspunkt.plusHours(2),
             event = StatusEvent.APEN
         )
 
-        val sykmeldingStatusEvent5MaanderBekreftetPlus3Hours = SykmeldingStatusEvent(
-            sykmeldingId = sykmeldingsopplysningerNy.id,
-            timestamp = LocalDateTime.now().plusHours(2),
+        val sykmeldingStatusEvent5MaanderBekreftetPlus2Hours = SykmeldingStatusEvent(
+            sykmeldingId = sykmeldingsopplysninger5Maander.id,
+            timestamp = sykmeldingsopplysninger5Maander.mottattTidspunkt.plusHours(2),
             event = StatusEvent.BEKREFTET
         )
 
         val sykmeldingStatusEvent5MaanderApenPlus3Hours = SykmeldingStatusEvent(
-            sykmeldingId = sykmeldingsopplysningerNy.id,
-            timestamp = LocalDateTime.now().plusHours(3),
+            sykmeldingId = sykmeldingsopplysninger5Maander.id,
+            timestamp = sykmeldingsopplysninger5Maander.mottattTidspunkt.plusHours(3),
             event = StatusEvent.APEN
         )
 
         database.opprettSykmeldingsopplysninger(sykmeldingsopplysninger5Maander)
-        database.registerStatus(sykmeldingStatusEvent5Maander)
-        database.registerStatus(sykmeldingStatusEvent5MaanderBekreftetPlus3Hours)
+        database.registerStatus(sykmeldingStatusEvent5MaanderApenPlus1Hours)
+        database.registerStatus(sykmeldingStatusEvent5MaanderBekreftetPlus2Hours)
         database.registerStatus(sykmeldingStatusEvent5MaanderApenPlus3Hours)
 
         val utgattDato = finnUtgaatDato()
 
-        val antallSykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
-        antallSykmeldingerSomSkalDeaktiveres shouldEqual 2
+        val antallSykmeldingerSomSkalDeaktiveres = database.registerSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+        antallSykmeldingerSomSkalDeaktiveres shouldEqual 1
 
         val sykmeldingStatuser = database.hentSykmeldingStatuser()
         sykmeldingStatuser.size shouldEqual 7

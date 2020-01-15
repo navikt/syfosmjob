@@ -4,7 +4,7 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 import no.nav.helse.db.DatabaseInterface
 
-fun DatabaseInterface.hentSykmeldingerSomSkalSettesTilStatusUtgatt(ugattDato: LocalDateTime): Int {
+fun DatabaseInterface.registerSykmeldingerSomSkalSettesTilStatusUtgatt(ugattDato: LocalDateTime): Int {
     connection.use { connection ->
     val antallUtgatt = connection.prepareStatement(
             """

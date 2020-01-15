@@ -1,4 +1,4 @@
-package no.nav.helse.util
+package no.nav.helse.model
 
 import java.time.LocalDateTime
 

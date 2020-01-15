@@ -3,7 +3,8 @@ package no.nav.helse
 import java.time.LocalDateTime
 import no.nav.helse.db.Database
 import no.nav.helse.db.VaultCredentialService
-import no.nav.helse.utgattsykmelding.oppdaterSykmeldingStatusTilUtgatt
+import no.nav.helse.utgattsykmelding.hentSykmeldingerSomSkalSettesTilStatusUtgatt
+import no.nav.helse.utgattsykmelding.registererSykmeldingStatus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -13,9 +14,13 @@ fun main() {
     val environment = Environment()
     val vaultCredentialService = VaultCredentialService()
     val database = Database(environment, vaultCredentialService)
-    log.info("Kjører database spørring, og setter status til UTGATT på sykmeldinger som er utgått")
-    val antallUtgatt = database.oppdaterSykmeldingStatusTilUtgatt(finnUtgaatDato())
-    log.info("Antall meldinger som ble satt til UTGATT {}", antallUtgatt)
+    val sykmeldingerSomSkalSettesTilStatusUtgatt = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(finnUtgaatDato())
+    if (sykmeldingerSomSkalSettesTilStatusUtgatt.isNotEmpty()) {
+        log.info("Antall av sykmeldinger som skal få oppdatert status til UTGATT: {}", sykmeldingerSomSkalSettesTilStatusUtgatt.size)
+        database.registererSykmeldingStatus(sykmeldingerSomSkalSettesTilStatusUtgatt)
+    } else {
+        log.info("Antall av sykmeldinger som skal få oppdatert status til UTGATT: 0")
+    }
 }
 
 fun finnUtgaatDato(): LocalDateTime =

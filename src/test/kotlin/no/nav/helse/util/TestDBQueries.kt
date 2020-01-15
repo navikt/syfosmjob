@@ -4,6 +4,8 @@ import java.sql.ResultSet
 import java.sql.Timestamp
 import no.nav.helse.db.DatabaseInterface
 import no.nav.helse.db.toList
+import no.nav.helse.model.SykmeldingStatusEvent
+import no.nav.helse.utgattsykmelding.tilSykmeldingStatusEvent
 
 fun DatabaseInterface.registerStatus(sykmeldingStatusEvent: SykmeldingStatusEvent) {
     connection.use { connection ->
@@ -61,12 +63,25 @@ fun DatabaseInterface.opprettSykmeldingsopplysninger(sykmeldingsopplysninger: Sy
     }
 }
 
+fun DatabaseInterface.hentSykmeldingerMedStatusUtgatt(): List<SykmeldingStatusEvent> =
+    connection.use { connection ->
+        connection.prepareStatement(
+            """
+                SELECT sykmelding_id, event_timestamp, event
+                FROM sykmeldingstatus
+                where event = 'UTGATT'
+            """
+        ).use {
+            it.executeQuery().toList { tilSykmeldingStatusEvent() }
+        }
+    }
+
 fun DatabaseInterface.hentSykmeldingsopplysninger(): List<Sykmeldingsopplysninger> {
     connection.use { connection ->
         connection.prepareStatement(
             """
                 SELECT *
-                FROM SYKMELDINGSOPPLYSNINGER;
+                FROM SYKMELDINGSOPPLYSNINGER
                 """
         ).use {
             return it.executeQuery().toList { toSykmeldingsopplysninger() }

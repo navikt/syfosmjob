@@ -59,6 +59,8 @@ dependencies {
 
     implementation("no.nav.helse:syfosm-common-models:$smCommonVersion")
 
+    runtimeOnly("org.slf4j:slf4j-log4j12:1.7.30")
+
     testImplementation("com.opentable.components:otj-pg-embedded:$postgresEmbeddedVersion")
 
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")

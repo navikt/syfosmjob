@@ -1,12 +1,14 @@
 package no.nav.helse
 
 import java.time.LocalDateTime
-import no.nav.helse.utgattsykmelding.oppdaterSykmeldingStatusTilUtgatt
-import no.nav.helse.util.StatusEvent
-import no.nav.helse.util.SykmeldingStatusEvent
+import no.nav.helse.model.StatusEvent
+import no.nav.helse.model.SykmeldingStatusEvent
+import no.nav.helse.utgattsykmelding.hentSykmeldingerSomSkalSettesTilStatusUtgatt
+import no.nav.helse.utgattsykmelding.registererSykmeldingStatus
 import no.nav.helse.util.Sykmeldingsopplysninger
 import no.nav.helse.util.TestDB
 import no.nav.helse.util.dropData
+import no.nav.helse.util.hentSykmeldingerMedStatusUtgatt
 import no.nav.helse.util.opprettSykmeldingsopplysninger
 import no.nav.helse.util.registerStatus
 import org.amshove.kluent.shouldEqual
@@ -44,7 +46,9 @@ internal class UtgattSykmeldingTest {
 
         val utgattDato = finnUtgaatDato()
 
-        database.oppdaterSykmeldingStatusTilUtgatt(utgattDato) shouldEqual 0
+        val sykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+
+        sykmeldingerSomSkalDeaktiveres.size shouldEqual 0
         database.connection.dropData()
     }
 
@@ -101,7 +105,14 @@ internal class UtgattSykmeldingTest {
 
         val utgattDato = finnUtgaatDato()
 
-        database.oppdaterSykmeldingStatusTilUtgatt(utgattDato) shouldEqual 1
+        val sykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+        sykmeldingerSomSkalDeaktiveres.size shouldEqual 1
+
+        database.registererSykmeldingStatus(sykmeldingerSomSkalDeaktiveres)
+
+        val sykmeldingerMedStatusUtgatt = database.hentSykmeldingerMedStatusUtgatt()
+        sykmeldingerMedStatusUtgatt.size shouldEqual 1
+
         database.connection.dropData()
     }
 
@@ -182,7 +193,13 @@ internal class UtgattSykmeldingTest {
 
         val utgattDato = finnUtgaatDato()
 
-        database.oppdaterSykmeldingStatusTilUtgatt(utgattDato) shouldEqual 2
+        val sykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+        sykmeldingerSomSkalDeaktiveres.size shouldEqual 2
+
+        database.registererSykmeldingStatus(sykmeldingerSomSkalDeaktiveres)
+
+        val sykmeldingerMedStatusUtgatt = database.hentSykmeldingerMedStatusUtgatt()
+        sykmeldingerMedStatusUtgatt.size shouldEqual 2
         database.connection.dropData()
     }
 }

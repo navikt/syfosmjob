@@ -8,7 +8,7 @@ import no.nav.helse.utgattsykmelding.registererSykmeldingStatus
 import no.nav.helse.util.Sykmeldingsopplysninger
 import no.nav.helse.util.TestDB
 import no.nav.helse.util.dropData
-import no.nav.helse.util.hentSykmeldingerMedStatusUtgatt
+import no.nav.helse.util.hentSykmeldingStatuser
 import no.nav.helse.util.opprettSykmeldingsopplysninger
 import no.nav.helse.util.registerStatus
 import org.amshove.kluent.shouldEqual
@@ -110,8 +110,11 @@ internal class UtgattSykmeldingTest {
 
         database.registererSykmeldingStatus(sykmeldingerSomSkalDeaktiveres)
 
-        val sykmeldingerMedStatusUtgatt = database.hentSykmeldingerMedStatusUtgatt()
-        sykmeldingerMedStatusUtgatt.size shouldEqual 1
+        val sykmeldingStatuser = database.hentSykmeldingStatuser()
+        sykmeldingStatuser.size shouldEqual 3
+
+        val sykmeldingStatuserUtgatt = sykmeldingStatuser.filter { it.event == StatusEvent.UTGATT }
+        sykmeldingStatuserUtgatt.size shouldEqual 1
 
         database.connection.dropData()
     }
@@ -198,8 +201,12 @@ internal class UtgattSykmeldingTest {
 
         database.registererSykmeldingStatus(sykmeldingerSomSkalDeaktiveres)
 
-        val sykmeldingerMedStatusUtgatt = database.hentSykmeldingerMedStatusUtgatt()
-        sykmeldingerMedStatusUtgatt.size shouldEqual 2
+        val sykmeldingStatuser = database.hentSykmeldingStatuser()
+        sykmeldingStatuser.size shouldEqual 5
+
+        val sykmeldingStatuserUtgatt = sykmeldingStatuser.filter { it.event == StatusEvent.UTGATT }
+        sykmeldingStatuserUtgatt.size shouldEqual 2
+
         database.connection.dropData()
     }
 }

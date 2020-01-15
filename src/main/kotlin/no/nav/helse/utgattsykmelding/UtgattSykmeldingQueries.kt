@@ -22,7 +22,7 @@ fun DatabaseInterface.hentSykmeldingerSomSkalSettesTilStatusUtgatt(ugattDato: Lo
             """
         ).use {
             it.setTimestamp(1, Timestamp.valueOf(ugattDato))
-            it.executeQuery().toList { tilSykmeldingStatusEvent() }
+            it.executeQuery().toList { tilSykmeldingStatusEventUtgatt() }
         }
     }
 
@@ -49,7 +49,7 @@ fun DatabaseInterface.registererSykmeldingStatus(sykmeldingStatusEvents: List<Sy
     }
 }
 
-fun ResultSet.tilSykmeldingStatusEvent(): SykmeldingStatusEvent =
+fun ResultSet.tilSykmeldingStatusEventUtgatt(): SykmeldingStatusEvent =
     SykmeldingStatusEvent(
         sykmeldingId = getString("sykmelding_id"),
         timestamp = LocalDateTime.now(),

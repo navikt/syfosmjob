@@ -4,8 +4,8 @@ import java.sql.ResultSet
 import java.sql.Timestamp
 import no.nav.helse.db.DatabaseInterface
 import no.nav.helse.db.toList
+import no.nav.helse.model.StatusEvent
 import no.nav.helse.model.SykmeldingStatusEvent
-import no.nav.helse.utgattsykmelding.tilSykmeldingStatusEvent
 
 fun DatabaseInterface.registerStatus(sykmeldingStatusEvent: SykmeldingStatusEvent) {
     connection.use { connection ->
@@ -63,45 +63,32 @@ fun DatabaseInterface.opprettSykmeldingsopplysninger(sykmeldingsopplysninger: Sy
     }
 }
 
-fun DatabaseInterface.hentSykmeldingerMedStatusUtgatt(): List<SykmeldingStatusEvent> =
+fun DatabaseInterface.hentSykmeldingStatuser(): List<SykmeldingStatusEvent> =
     connection.use { connection ->
         connection.prepareStatement(
             """
                 SELECT sykmelding_id, event_timestamp, event
                 FROM sykmeldingstatus
-                where event = 'UTGATT'
             """
         ).use {
             it.executeQuery().toList { tilSykmeldingStatusEvent() }
         }
     }
 
-fun DatabaseInterface.hentSykmeldingsopplysninger(): List<Sykmeldingsopplysninger> {
-    connection.use { connection ->
-        connection.prepareStatement(
-            """
-                SELECT *
-                FROM SYKMELDINGSOPPLYSNINGER
-                """
-        ).use {
-            return it.executeQuery().toList { toSykmeldingsopplysninger() }
-        }
+fun ResultSet.tilSykmeldingStatusEvent(): SykmeldingStatusEvent =
+    SykmeldingStatusEvent(
+        sykmeldingId = getString("sykmelding_id"),
+        timestamp = getTimestamp("event_timestamp").toLocalDateTime(),
+        event = tilStatusEvent(getString("event"))
+    )
+
+private fun tilStatusEvent(status: String): StatusEvent {
+    return when (status) {
+        "BEKREFTET" -> StatusEvent.BEKREFTET
+        "APEN" -> StatusEvent.APEN
+        "SENDT" -> StatusEvent.SENDT
+        "AVBRUTT" -> StatusEvent.AVBRUTT
+        "UTGATT" -> StatusEvent.UTGATT
+        else -> throw IllegalStateException("Sykmeldingen har ukjent status eller er slettet, skal ikke kunne skje")
     }
 }
-
-fun ResultSet.toSykmeldingsopplysninger(): Sykmeldingsopplysninger =
-    Sykmeldingsopplysninger(
-        id = getString("id"),
-        pasientFnr = getString("pasient_fnr"),
-        pasientAktoerId = getString("pasient_aktoer_id"),
-        legeFnr = getString("lege_fnr"),
-        legeAktoerId = getString("lege_aktoer_id"),
-        mottakId = getString("mottak_id"),
-        legekontorOrgNr = getString("legekontor_org_nr"),
-        legekontorHerId = getString("legekontor_her_id"),
-        legekontorReshId = getString("legekontor_resh_id"),
-        epjSystemNavn = getString("epj_system_navn"),
-        epjSystemVersjon = getString("epj_system_versjon"),
-        mottattTidspunkt = getTimestamp("mottatt_tidspunkt").toLocalDateTime(),
-        tssid = getString("tss_id")
-    )

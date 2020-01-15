@@ -4,7 +4,6 @@ import java.time.LocalDateTime
 import no.nav.helse.model.StatusEvent
 import no.nav.helse.model.SykmeldingStatusEvent
 import no.nav.helse.utgattsykmelding.hentSykmeldingerSomSkalSettesTilStatusUtgatt
-import no.nav.helse.utgattsykmelding.registererSykmeldingStatus
 import no.nav.helse.util.Sykmeldingsopplysninger
 import no.nav.helse.util.TestDB
 import no.nav.helse.util.dropData
@@ -46,9 +45,9 @@ internal class UtgattSykmeldingTest {
 
         val utgattDato = finnUtgaatDato()
 
-        val sykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+        val antallSykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
 
-        sykmeldingerSomSkalDeaktiveres.size shouldEqual 0
+        antallSykmeldingerSomSkalDeaktiveres shouldEqual 0
         database.connection.dropData()
     }
 
@@ -105,10 +104,8 @@ internal class UtgattSykmeldingTest {
 
         val utgattDato = finnUtgaatDato()
 
-        val sykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
-        sykmeldingerSomSkalDeaktiveres.size shouldEqual 1
-
-        database.registererSykmeldingStatus(sykmeldingerSomSkalDeaktiveres)
+        val antallSykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+        antallSykmeldingerSomSkalDeaktiveres shouldEqual 1
 
         val sykmeldingStatuser = database.hentSykmeldingStatuser()
         sykmeldingStatuser.size shouldEqual 3
@@ -196,10 +193,8 @@ internal class UtgattSykmeldingTest {
 
         val utgattDato = finnUtgaatDato()
 
-        val sykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
-        sykmeldingerSomSkalDeaktiveres.size shouldEqual 2
-
-        database.registererSykmeldingStatus(sykmeldingerSomSkalDeaktiveres)
+        val antallSykmeldingerSomSkalDeaktiveres = database.hentSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
+        antallSykmeldingerSomSkalDeaktiveres shouldEqual 2
 
         val sykmeldingStatuser = database.hentSykmeldingStatuser()
         sykmeldingStatuser.size shouldEqual 5

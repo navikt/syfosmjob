@@ -306,6 +306,4 @@ internal class UtgattSykmeldingTest {
 
         database.connection.dropData()
     }
-
-
 }

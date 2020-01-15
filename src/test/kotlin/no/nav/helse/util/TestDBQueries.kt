@@ -11,7 +11,7 @@ fun DatabaseInterface.registerStatus(sykmeldingStatusEvent: SykmeldingStatusEven
     connection.use { connection ->
         connection.prepareStatement(
             """
-                INSERT INTO sykmeldingstatus(sykmelding_id, event_timestamp, event) VALUES (?, ?, ?) ON CONFLICT DO NOTHING
+                INSERT INTO sykmeldingstatus(sykmelding_id, event_timestamp, event) VALUES (?, ?, ?)
                 """
         ).use {
             it.setString(1, sykmeldingStatusEvent.sykmeldingId)

@@ -15,7 +15,7 @@ fun DatabaseInterface.registerSykmeldingerSomSkalSettesTilStatusUtgatt(ugattDato
                               FROM sykmeldingstatus
                               WHERE sykmelding_id = ss.sykmelding_id
                               AND event = 'APEN'
-                              ORDER BY event_timestamp DESC
+                              ORDER BY event_timestamp ASC
                               LIMIT 1)
                 AND ss.event_timestamp <= ?     
             """

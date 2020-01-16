@@ -4,12 +4,14 @@ import java.sql.ResultSet
 import java.sql.Timestamp
 import no.nav.helse.db.DatabaseInterface
 import no.nav.helse.db.toList
+import no.nav.helse.model.StatusEvent
+import no.nav.helse.model.SykmeldingStatusEvent
 
 fun DatabaseInterface.registerStatus(sykmeldingStatusEvent: SykmeldingStatusEvent) {
     connection.use { connection ->
         connection.prepareStatement(
             """
-                INSERT INTO sykmeldingstatus(sykmelding_id, event_timestamp, event) VALUES (?, ?, ?) ON CONFLICT DO NOTHING
+                INSERT INTO sykmeldingstatus(sykmelding_id, event_timestamp, event) VALUES (?, ?, ?)
                 """
         ).use {
             it.setString(1, sykmeldingStatusEvent.sykmeldingId)
@@ -61,32 +63,32 @@ fun DatabaseInterface.opprettSykmeldingsopplysninger(sykmeldingsopplysninger: Sy
     }
 }
 
-fun DatabaseInterface.hentSykmeldingsopplysninger(): List<Sykmeldingsopplysninger> {
+fun DatabaseInterface.hentSykmeldingStatuser(): List<SykmeldingStatusEvent> =
     connection.use { connection ->
         connection.prepareStatement(
             """
-                SELECT *
-                FROM SYKMELDINGSOPPLYSNINGER;
-                """
+                SELECT sykmelding_id, event_timestamp, event
+                FROM sykmeldingstatus
+            """
         ).use {
-            return it.executeQuery().toList { toSykmeldingsopplysninger() }
+            it.executeQuery().toList { tilSykmeldingStatusEvent() }
         }
     }
-}
 
-fun ResultSet.toSykmeldingsopplysninger(): Sykmeldingsopplysninger =
-    Sykmeldingsopplysninger(
-        id = getString("id"),
-        pasientFnr = getString("pasient_fnr"),
-        pasientAktoerId = getString("pasient_aktoer_id"),
-        legeFnr = getString("lege_fnr"),
-        legeAktoerId = getString("lege_aktoer_id"),
-        mottakId = getString("mottak_id"),
-        legekontorOrgNr = getString("legekontor_org_nr"),
-        legekontorHerId = getString("legekontor_her_id"),
-        legekontorReshId = getString("legekontor_resh_id"),
-        epjSystemNavn = getString("epj_system_navn"),
-        epjSystemVersjon = getString("epj_system_versjon"),
-        mottattTidspunkt = getTimestamp("mottatt_tidspunkt").toLocalDateTime(),
-        tssid = getString("tss_id")
+fun ResultSet.tilSykmeldingStatusEvent(): SykmeldingStatusEvent =
+    SykmeldingStatusEvent(
+        sykmeldingId = getString("sykmelding_id"),
+        timestamp = getTimestamp("event_timestamp").toLocalDateTime(),
+        event = tilStatusEvent(getString("event"))
     )
+
+private fun tilStatusEvent(status: String): StatusEvent {
+    return when (status) {
+        "BEKREFTET" -> StatusEvent.BEKREFTET
+        "APEN" -> StatusEvent.APEN
+        "SENDT" -> StatusEvent.SENDT
+        "AVBRUTT" -> StatusEvent.AVBRUTT
+        "UTGATT" -> StatusEvent.UTGATT
+        else -> throw IllegalStateException("Sykmeldingen har ukjent status eller er slettet, skal ikke kunne skje")
+    }
+}

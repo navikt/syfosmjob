@@ -4,22 +4,27 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 import no.nav.helse.db.DatabaseInterface
 
-fun DatabaseInterface.oppdaterSykmeldingStatusTilUtgatt(ugattDato: LocalDateTime): Int =
+fun DatabaseInterface.registerSykmeldingerSomSkalSettesTilStatusUtgatt(ugattDato: LocalDateTime): Int {
     connection.use { connection ->
-    val status = connection.prepareStatement(
+    val antallUtgatt = connection.prepareStatement(
             """
-                UPDATE sykmeldingstatus
-                SET event = 'UTGATT'
-                where event = 'APEN'
-                AND sykmeldingstatus.sykmelding_id IN (
-                    SELECT id
-                    FROM sykmeldingsopplysninger
-                    WHERE mottatt_tidspunkt <= ?);
+                INSERT INTO sykmeldingstatus
+                SELECT ss.sykmelding_id, CURRENT_TIMESTAMP, 'UTGATT'
+                FROM sykmeldingstatus AS ss
+                where event_timestamp = (SELECT event_timestamp
+                              FROM sykmeldingstatus
+                              WHERE sykmelding_id = ss.sykmelding_id
+                              AND event = 'APEN'
+                              ORDER BY event_timestamp ASC
+                              LIMIT 1)
+                AND ss.event_timestamp <= ?     
             """
         ).use {
-                it.setTimestamp(1, Timestamp.valueOf(ugattDato))
-            it.executeUpdate()
+            it.setTimestamp(1, Timestamp.valueOf(ugattDato))
+        it.executeUpdate()
         }
         connection.commit()
-    return status
+
+        return antallUtgatt
     }
+}

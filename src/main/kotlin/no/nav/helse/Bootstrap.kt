@@ -14,16 +14,12 @@ fun main() {
     val vaultCredentialService = VaultCredentialService()
     val database = Database(environment, vaultCredentialService)
     val sykmeldingerSomSkalSettesTilStatusUtgatt = database.registerSykmeldingerSomSkalSettesTilStatusUtgatt(finnUtgaatDato())
-    /*if (sykmeldingerSomSkalSettesTilStatusUtgatt.isNotEmpty()) {
-        log.info("Antall av sykmeldinger som skal få oppdatert status til UTGATT: {}", sykmeldingerSomSkalSettesTilStatusUtgatt.size)
-        for (status in sykmeldingerSomSkalSettesTilStatusUtgatt) {
-            log.info("Sykmeldingen med id {}, kommer til å få status til UTGATT", status.sykmeldingId)
-        }
-        database.registererSykmeldingStatus(sykmeldingerSomSkalSettesTilStatusUtgatt)
+    if (sykmeldingerSomSkalSettesTilStatusUtgatt > 0) {
+        log.info("Antall av sykmeldinger som er blitt oppdatert til status UTGATT: {}", sykmeldingerSomSkalSettesTilStatusUtgatt)
     } else {
-        log.info("Antall av sykmeldinger som skal få status til UTGATT: 0")
+        log.info("Ingen sykmeldinger er blitt oppdatert med status til UTGATT")
     }
-     */
+
 }
 
 fun finnUtgaatDato(): LocalDateTime =

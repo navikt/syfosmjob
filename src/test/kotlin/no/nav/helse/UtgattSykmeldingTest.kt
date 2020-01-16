@@ -308,7 +308,7 @@ internal class UtgattSykmeldingTest {
     }
 
     @Test
-    internal fun `Skal oppdatere 1 sykmelding med status utgatt, har mange ulike statuser`() {
+    internal fun `Skal oppdatere 2 sykmelding med status utgatt, har mange ulike statuser`() {
         val sykmeldingsopplysningerNy = Sykmeldingsopplysninger(
             id = "uuid",
             pasientFnr = "pasientFnr",
@@ -384,7 +384,7 @@ internal class UtgattSykmeldingTest {
 
         val sykmeldingStatusEvent5MaanderApenPlus1Hours = SykmeldingStatusEvent(
             sykmeldingId = sykmeldingsopplysninger5Maander.id,
-            timestamp = sykmeldingsopplysninger5Maander.mottattTidspunkt.plusHours(2),
+            timestamp = sykmeldingsopplysninger5Maander.mottattTidspunkt.plusHours(1),
             event = StatusEvent.APEN
         )
 
@@ -408,10 +408,10 @@ internal class UtgattSykmeldingTest {
         val utgattDato = finnUtgaatDato()
 
         val antallSykmeldingerSomSkalDeaktiveres = database.registerSykmeldingerSomSkalSettesTilStatusUtgatt(utgattDato)
-        antallSykmeldingerSomSkalDeaktiveres shouldEqual 1
+        antallSykmeldingerSomSkalDeaktiveres shouldEqual 2
 
         val sykmeldingStatuser = database.hentSykmeldingStatuser()
-        sykmeldingStatuser.size shouldEqual 7
+        sykmeldingStatuser.size shouldEqual 8
 
         val sykmeldingStatuserUtgatt = sykmeldingStatuser.filter { it.event == StatusEvent.UTGATT }
         sykmeldingStatuserUtgatt.size shouldEqual 2

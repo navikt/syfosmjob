@@ -13,14 +13,12 @@ fun main() {
     val environment = Environment()
     val vaultCredentialService = VaultCredentialService()
     val database = Database(environment, vaultCredentialService)
-    log.info("Hello")
     val sykmeldingerSomSkalSettesTilStatusUtgatt = database.registerSykmeldingerSomSkalSettesTilStatusUtgatt(finnUtgaatDato())
     if (sykmeldingerSomSkalSettesTilStatusUtgatt > 0) {
         log.info("Antall av sykmeldinger som er blitt oppdatert til status UTGATT: {}", sykmeldingerSomSkalSettesTilStatusUtgatt)
     } else {
         log.info("Ingen sykmeldinger er blitt oppdatert med status til UTGATT")
     }
-
 }
 
 fun finnUtgaatDato(): LocalDateTime =

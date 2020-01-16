@@ -15,9 +15,9 @@ fun main() {
     val database = Database(environment, vaultCredentialService)
     val sykmeldingerSomSkalSettesTilStatusUtgatt = database.registerSykmeldingerSomSkalSettesTilStatusUtgatt(finnUtgaatDato())
     if (sykmeldingerSomSkalSettesTilStatusUtgatt > 0) {
-        log.info("Antall av sykmeldinger som er blitt oppdatert til status UTGATT: {}", sykmeldingerSomSkalSettesTilStatusUtgatt)
+        log.info("Antall sykmeldinger som har fått status UTGATT: {}", sykmeldingerSomSkalSettesTilStatusUtgatt)
     } else {
-        log.info("Ingen sykmeldinger er blitt oppdatert med status til UTGATT")
+        log.info("Ingen sykmeldinger har fått status UTGATT")
     }
 }
 

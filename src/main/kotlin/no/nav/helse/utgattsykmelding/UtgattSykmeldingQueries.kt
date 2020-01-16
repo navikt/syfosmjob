@@ -11,7 +11,7 @@ fun DatabaseInterface.registerSykmeldingerSomSkalSettesTilStatusUtgatt(ugattDato
                 INSERT INTO sykmeldingstatus
                 SELECT ss.sykmelding_id, CURRENT_TIMESTAMP, 'UTGATT'
                 FROM sykmeldingstatus AS ss
-                where ss.event_timestamp = (SELECT event_timestamp
+                where event_timestamp = (SELECT event_timestamp
                               FROM sykmeldingstatus
                               WHERE sykmelding_id = ss.sykmelding_id
                               AND event = 'APEN'

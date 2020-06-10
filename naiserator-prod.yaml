@@ -2,7 +2,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: syfosmjob
-  namespace: syfosm
+  namespace: teamsykefravr
   labels:
     team: teamsykefravr
 spec:
@@ -62,22 +62,22 @@ spec:
                 value: "http://nais-prometheus-prometheus-pushgateway.nais:9091"
             volumeMounts:
               - mountPath: /etc/ssl/certs/ca-certificates.crt
-                name: ca-bundle
+                name: ca-bundle-pem
                 subPath: ca-bundle.pem
               - mountPath: /etc/pki/tls/certs/ca-bundle.crt
-                name: ca-bundle
+                name: ca-bundle-pem
                 subPath: ca-bundle.pem
               - mountPath: /etc/ssl/ca-bundle.pem
-                name: ca-bundle
+                name: ca-bundle-pem
                 subPath: ca-bundle.pem
               - mountPath: /etc/pki/tls/cacert.pem
-                name: ca-bundle
+                name: ca-bundle-pem
                 subPath: ca-bundle.pem
               - mountPath: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
-                name: ca-bundle
+                name: ca-bundle-pem
                 subPath: ca-bundle.pem
               - mountPath: /etc/ssl/certs/java/cacerts
-                name: ca-bundle
+                name: ca-bundle-jks
                 subPath: ca-bundle.jks
               - mountPath: /var/run/secrets/nais.io/vault
                 name: vault-volume
@@ -87,8 +87,12 @@ spec:
           volumes:
             - configMap:
                 defaultMode: 420
-                name: ca-bundle
-              name: ca-bundle
+                name: ca-bundle-pem
+              name: ca-bundle-pem
+            - configMap:
+                defaultMode: 420
+                name: ca-bundle-jks
+              name: ca-bundle-jks
             - emptyDir:
                 medium: Memory
               name: vault-volume
